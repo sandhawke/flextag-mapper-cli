@@ -1,0 +1,7 @@
+hello ?name ?(mode=1)
+
+goodbye ?name ?(mode=2)
+
+% Try this with:
+%
+% echo 'hello sandro hello linux goodbye sleep' | ./parse.js 
