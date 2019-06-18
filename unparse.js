@@ -30,6 +30,10 @@ async function main() {
     source = fs.createReadStream(filename)
   }
 
+  if (source.isTTY) {
+    console.log('(waiting for user input)')
+  }
+  
   try {
     str = await streamString(source)
   } catch (e) {

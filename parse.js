@@ -5,6 +5,7 @@ const readFile = require('fs-readfile-promise')
 const yargs = require('yargs')
 const fs = require('fs')
 const { Mapper } = require('flextag-mapper')
+const tty = require('tty')
 
 yargs
   .help()
@@ -44,6 +45,10 @@ async function main() {
   let filename = argv._.shift()
   if (filename) {
     source = fs.createReadStream(filename)
+  }
+
+  if (source.isTTY) {
+    console.log('(waiting for user input)')
   }
 
   try {
@@ -87,9 +92,14 @@ async function main() {
 async function loadMapper () {
   const filename = argv.mapspec
   // alas fs.promises gives a warning still after all these years
-  const bytes = await readFile(filename, 'utf8')
-  const mapper = new Mapper(bytes)
-  return mapper
+  try {
+    const bytes = await readFile(filename, 'utf8') 
+    const mapper = new Mapper(bytes)
+    return mapper
+ } catch (e) {
+    console.error(e.message)
+    process.exit(1)
+  }
 }
 
 main()
