@@ -1,6 +1,6 @@
 {
   "name": "flextag-mapper-cli",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A command line interface for flextag-mapper",
   "bin": {
     "flextag-parse": "parse.js",
