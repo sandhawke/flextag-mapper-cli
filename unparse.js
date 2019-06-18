@@ -6,7 +6,7 @@ const yargs = require('yargs')
 const fs = require('fs')
 const { Mapper } = require('flextag-mapper')
 
-yargs
+const argv = yargs
   .help()
   .usage('$0 [options] input-data')
   .option('mapspec', {
@@ -19,11 +19,10 @@ yargs
     describe: 'output indented JSON'
   })
   .argv
-const argv = yargs.argv
 
-async function main() {
+async function main () {
   const mapper = await loadMapper()
-  let str,obj
+  let str, obj
   let source = process.stdin
   let filename = argv._.shift()
   if (filename) {
@@ -33,7 +32,7 @@ async function main() {
   if (source.isTTY) {
     console.log('(waiting for user input)')
   }
-  
+
   try {
     str = await streamString(source)
   } catch (e) {
@@ -54,10 +53,10 @@ async function main() {
     print(obj)
   }
 
-  function print(b) {
+  function print (b) {
     let out = mapper.unparse(b)
     if (!out) {
-      out = 'A JSON object with no matching flextag: '+JSON.stringify(JSON.stringify(b))
+      out = 'A JSON object with no matching flextag: ' + JSON.stringify(JSON.stringify(b))
     }
     process.stdout.write(out)
     process.stdout.write('\n')

@@ -5,9 +5,8 @@ const readFile = require('fs-readfile-promise')
 const yargs = require('yargs')
 const fs = require('fs')
 const { Mapper } = require('flextag-mapper')
-const tty = require('tty')
 
-yargs
+const argv = yargs
   .help()
   .usage('$0 [options] input-data')
   .option('mapspec', {
@@ -36,11 +35,10 @@ yargs
     describe: 'use jsonic.stringify for output'
   })
   .argv
-const argv = yargs.argv
 
-async function main() {
+async function main () {
   const mapper = await loadMapper()
-  let str,obj
+  let str, obj
   let source = process.stdin
   let filename = argv._.shift()
   if (filename) {
@@ -74,7 +72,7 @@ async function main() {
   } else {
     mapper.parse(str, b => obj.push(b))
   }
-  
+
   let out
   if (argv.jsonic) {
     out = jsonic.stringify(obj)
@@ -93,10 +91,10 @@ async function loadMapper () {
   const filename = argv.mapspec
   // alas fs.promises gives a warning still after all these years
   try {
-    const bytes = await readFile(filename, 'utf8') 
+    const bytes = await readFile(filename, 'utf8')
     const mapper = new Mapper(bytes)
     return mapper
- } catch (e) {
+  } catch (e) {
     console.error(e.message)
     process.exit(1)
   }
