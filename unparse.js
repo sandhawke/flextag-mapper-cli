@@ -18,22 +18,6 @@ yargs
     alias: 'j',
     describe: 'output indented JSON'
   })
-  .option('trace', {
-    alias: 't',
-    describe: 'output at parse time'
-  })
-  .option('console', {
-    alias: 'l',
-    describe: 'output like console.log'
-  })
-  .option('compact', {
-    alias: 'c',
-    describe: 'output compact one-line JSON'
-  })
-  .option('jsonic', {
-    alias: 's',
-    describe: 'use jsonic.stringify for output'
-  })
   .argv
 const argv = yargs.argv
 
@@ -53,34 +37,26 @@ async function main() {
     return
   }
 
-  /*
   try {
     obj = await jsonic(str)
   } catch (e) {
     console.error('jsonic error: ', e)
     return
   }
-  */
-  obj = []
-  if (argv.trace) {
-    mapper.parse(str, b => {
-      console.log(b)
-    })
+
+  if (Array.isArray(obj)) {
+    for (const row of obj) print(row)
   } else {
-    mapper.parse(str, b => obj.push(b))
+    print(obj)
   }
-  
-  let out
-  if (argv.jsonic) {
-    out = jsonic.stringify(obj)
-  } else if (argv.compact || argv.json) {
-    out = JSON.stringify(obj, null, argv.compact ? 0 : 2)
-  }
-  if (out) {
+
+  function print(b) {
+    let out = mapper.unparse(b)
+    if (!out) {
+      out = 'A JSON object with no matching flextag: '+JSON.stringify(JSON.stringify(b))
+    }
     process.stdout.write(out)
     process.stdout.write('\n')
-  } else {
-    console.log('%O', obj)
   }
 }
 
